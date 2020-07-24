@@ -157,6 +157,16 @@ const App = () => {
 };
 ```
 
+const App = () => {
+const [count, setCount] = React.useState(0);
+
+React.useEffect(() => {
+document.title = `You have clicked ${count} times`;
+}, [count])
+
+return <button onClick={() => setCount(count + 1)}>Increment</button>;
+};
+
 ---
 
 ```js
@@ -175,6 +185,25 @@ const App = ({ color }) => {
 };
 ```
 
+const App = ({ color }) => {
+const [value, setValue] = React.useState(false);
+
+React.useEffect(() => {
+window.localStorage.setItem("value", value);
+}, [value])
+React.useEffect(() => {
+window.localStorage.setItem("color", color);
+}, [color])
+
+return (
+
+<div>
+Value: {value}
+<button onClick={() => setValue(!value)}>Toggle thing</button>
+</div>
+);
+};
+
 ---
 
 ```js
@@ -188,6 +217,18 @@ const Modal = ({ handleClose }) => {
   return <div>Modal stuff</div>;
 };
 ```
+
+const Modal = ({ handleClose }) => {
+React.useEffect(() => {
+window.addEventListener("keydown", (ev) => {
+if (ev.code === "Escape") {
+handleClose();
+}
+});
+}, [])
+
+return <div>Modal stuff</div>;
+};
 
 ---
 
