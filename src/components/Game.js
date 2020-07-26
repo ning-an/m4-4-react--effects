@@ -24,21 +24,15 @@ const Game = () => {
     farm: 0,
   });
   const refFocus = useRef(null);
+  let numCookiesPerClick =
+    Object.values(purchasedItems).reduce((total, num) => total + num) + 1;
+  console.log(numCookiesPerClick);
 
   useEffect(() => {
     calculateCookiesPerTick(purchasedItems);
   }, [purchasedItems]);
 
-  // useEffect(() => {
-  //   document.title = `${numCookies} cookies - Cookie Clicker`;
-  // }, [numCookies]);
-
-  const handleCookieClick = (e, code) => {
-    if (e.code === code) {
-      setNumCookies((prevValue) => prevValue + 1);
-    }
-  };
-  useKeydown("Space", handleCookieClick);
+  useKeydown("Space", () => setNumCookies(numCookies + numCookiesPerClick));
   useDocumentTitle(numCookies, () => (document.title = ""));
 
   useEffect(() => {
@@ -81,7 +75,7 @@ const Game = () => {
         <Button>
           <Cookie
             src={cookieSrc}
-            onClick={() => setNumCookies(numCookies + 1)}
+            onClick={() => setNumCookies(numCookies + numCookiesPerClick)}
           />
         </Button>
       </GameArea>
