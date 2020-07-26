@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import cookieSrc from "../cookie.svg";
 import Item from "./Item";
 import useInterval from "../hooks/use-interval.hook";
+import { useKeydown } from "./useKeydown";
+import { useDocumentTitle } from "./useDocumentTitle";
 
 const items = [
   { id: "cursor", name: "Cursor", cost: 10, value: 1 },
@@ -21,14 +23,27 @@ const Game = () => {
     grandma: 0,
     farm: 0,
   });
+  const refFocus = useRef(null);
 
   useEffect(() => {
     calculateCookiesPerTick(purchasedItems);
   }, [purchasedItems]);
 
+  // useEffect(() => {
+  //   document.title = `${numCookies} cookies - Cookie Clicker`;
+  // }, [numCookies]);
+
+  const handleCookieClick = (e, code) => {
+    if (e.code === code) {
+      setNumCookies((prevValue) => prevValue + 1);
+    }
+  };
+  useKeydown("Space", handleCookieClick);
+  useDocumentTitle(numCookies, () => (document.title = ""));
+
   useEffect(() => {
-    document.title = `${numCookies} cookies - Cookie Clicker`;
-  }, [numCookies]);
+    refFocus.current.childNodes[1].focus();
+  }, []);
 
   const handleClick = (e) => {
     const itemWant = items.find((item) => item.id === e.target.id);
@@ -71,7 +86,7 @@ const Game = () => {
         </Button>
       </GameArea>
 
-      <ItemArea>
+      <ItemArea ref={refFocus}>
         <SectionTitle>Items:</SectionTitle>
         {items.map((item) => (
           <Item
