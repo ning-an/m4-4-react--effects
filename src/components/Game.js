@@ -16,27 +16,28 @@ const Game = () => {
     grandma: 0,
     farm: 0,
   });
-
+  const [items, setItems] = useState([
+    { id: "cursor", name: "Cursor", cost: 10, value: 1 },
+    { id: "grandma", name: "Grandma", cost: 100, value: 10 },
+    { id: "farm", name: "Farm", cost: 1000, value: 80 },
+  ]);
   //increase the cost
-  const refCursorCost = useRef(10);
-  const refGrandmaCost = useRef(100);
-  const refFarmCost = useRef(1000);
+  // const refCursorCost = useRef(10);
+  // const refGrandmaCost = useRef(100);
+  // const refFarmCost = useRef(1000);
 
-  const items = [
-    { id: "cursor", name: "Cursor", cost: refCursorCost.current, value: 1 },
-    { id: "grandma", name: "Grandma", cost: refGrandmaCost.current, value: 10 },
-    { id: "farm", name: "Farm", cost: refFarmCost.current, value: 80 },
-  ];
+  // const items = [
+  //   { id: "cursor", name: "Cursor", cost: 10, value: 1 },
+  //   { id: "grandma", name: "Grandma", cost: 100, value: 10 },
+  //   { id: "farm", name: "Farm", cost: 1000, value: 80 },
+  // ];
 
-  useEffect(() => {
-    refCursorCost.current = Math.ceil(refCursorCost.current * 1.2);
-  }, [purchasedItems.cursor]);
-  useEffect(() => {
-    refGrandmaCost.current = Math.ceil(refGrandmaCost.current * 1.2);
-  }, [purchasedItems.grandma]);
-  useEffect(() => {
-    refFarmCost.current = Math.ceil(refFarmCost.current * 1.2);
-  }, [purchasedItems.farm]);
+  // useEffect(() => {
+  //   refCursorCost.current = Math.ceil(refCursorCost.current * 1.2);
+  //   refGrandmaCost.current = Math.ceil(refGrandmaCost.current * 1.2);
+  //   refFarmCost.current = Math.ceil(refFarmCost.current * 1.2);
+  // }, [purchasedItems]);
+
   //increase num of cookies per click
   let numCookiesPerClick =
     Object.values(purchasedItems).reduce((total, num) => total + num) + 1;
@@ -55,10 +56,14 @@ const Game = () => {
   //purchase items
   const handleClick = (e) => {
     const itemWant = items.find((item) => item.id === e.target.id);
+    const itemIndex = items.indexOf(itemWant);
     const { id, cost } = itemWant;
     if (cost <= numCookies) {
       setNumCookies(numCookies - cost);
       setPurchasedItems({ ...purchasedItems, [id]: purchasedItems[id] + 1 });
+      const newArr = [...items];
+      newArr[itemIndex].cost = Math.ceil(cost * 1.2);
+      setItems(newArr);
     } else {
       window.alert("Sorry you cannot afford it");
     }
@@ -81,7 +86,6 @@ const Game = () => {
   useInterval(() => {
     setNumCookies(numCookies + refCookiePerSecond.current);
   }, 1000);
-
   return (
     <Wrapper>
       <GameArea>
